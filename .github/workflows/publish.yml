@@ -1,31 +1,29 @@
-name: build and publish to gitHub packages
+name: Semantic Release
 
 on:
   push:
-    tags:
-      - "v*" # Ex: v1.0.0
+    branches:
+      - main
 
 jobs:
-  build-and-publish:
+  release:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout do código
         uses: actions/checkout@v3
 
-      - name: Instalar Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: "20"
-          registry-url: "https://npm.pkg.github.com"
+          node-version: "18"
+          registry-url: "https://npm.pkg.github.com/"
 
       - name: Instalar dependências
         run: npm ci
 
-      - name: Build da lib
-        run: npm run build
-
-      - name: publish to gitHub packages
-        run: npm publish
+      - name: Rodar semantic-release
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
