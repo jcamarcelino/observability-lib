@@ -41,3 +41,9 @@ jobs:
           git add .
           git commit -m "Release ${{ github.ref_name }}"
           git push origin release --force
+
+      - name: publish github packages
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
