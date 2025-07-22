@@ -31,5 +31,6 @@ jobs:
       - name: Rodar semantic-release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEBUG: semantic-release:* # Ativa logs detalhados
         run: npx semantic-release
