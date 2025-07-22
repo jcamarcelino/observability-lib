@@ -10,7 +10,7 @@ export class Heartbeat {
 
   constructor(
     private beatIntervalMs: number = 60000,
-    private logger: Logger = console // fallback para console se nenhum logger for passado
+    private logger: Logger = console
   ) {}
 
   async start() {
