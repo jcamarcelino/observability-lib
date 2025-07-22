@@ -16,11 +16,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: "20"
           registry-url: "https://npm.pkg.github.com/"
 
       - name: Instalar dependências
         run: npm ci
+
+      - name: Configurar Git para autenticação
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/jcamarcelino/observability-lib.git
 
       - name: Rodar semantic-release
         env:
