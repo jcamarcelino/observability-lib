@@ -1,0 +1,43 @@
+name: build and publish
+
+on:
+  push:
+    tags:
+      - "v*" # Ex: v1.0.0
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Build da lib
+        run: npm run build
+
+      - name: Criar branch release com dist/
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+          # Cria diretório temporário
+          mkdir temp-release
+          cp -R dist temp-release/
+          cp package.json temp-release/
+
+          cd temp-release
+          git init
+          git checkout -b release
+          git remote add origin https://github.com/${{ github.repository }}
+          git add .
+          git commit -m "Release ${{ github.ref_name }}"
+          git push origin release --force
