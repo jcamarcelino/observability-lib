@@ -42,6 +42,21 @@
     "@semantic-release/release-notes-generator": "^12.0.0"
   },
   "release": {
-    "branches": ["main"]
-  }
+    "branches": ["main"],
+    "repositoryUrl": "https://github.com/jcamarcelino/observability-lib.git",
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": true,
+          "pkgRoot": ".",
+          "registry": "https://registry.npmjs.org/"
+        }
+      ],
+      "@semantic-release/git",
+      "@semantic-release/github"
+    ]
+  }  
 }
