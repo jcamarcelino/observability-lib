@@ -1,4 +1,4 @@
-import { metrics } from "./observability.index.js";
+import { metrics } from "./index.js";
 
 export interface Logger {
   info(message: string, ...meta: any[]): void;
