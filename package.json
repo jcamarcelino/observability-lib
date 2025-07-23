@@ -9,12 +9,18 @@
     "release": "semantic-release",
     "prepare": "npm run build"
   },
-  "keywords": ["observability", "monitoring", "heartbeat", "typescript", "metrics"],
+  "keywords": [
+    "observability",
+    "monitoring",
+    "heartbeat",
+    "typescript",
+    "metrics"
+  ],
   "author": "Julio Cesar de Almeida Marcelino",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jcamarcelino/observability-lib.git"
+    "url": "git+https://github.com/jcamarcelino/observability-lib.git"
   },
   "bugs": {
     "url": "https://github.com/jcamarcelino/observability-lib/issues"
@@ -42,7 +48,9 @@
     "@semantic-release/release-notes-generator": "^12.0.0"
   },
   "release": {
-    "branches": ["main"],
+    "branches": [
+      "main"
+    ],
     "repositoryUrl": "https://github.com/jcamarcelino/observability-lib.git",
     "plugins": [
       "@semantic-release/commit-analyzer",
@@ -58,5 +66,5 @@
       "@semantic-release/git",
       "@semantic-release/github"
     ]
-  }  
+  }
 }
