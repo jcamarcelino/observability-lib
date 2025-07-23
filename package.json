@@ -1,18 +1,27 @@
 {
   "name": "@jcamarcelino/observability-lib",
   "version": "1.0.0",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jcamarcelino/observability-lib.git"
-  },  
+  "description": "Biblioteca de observabilidade com heartbeat e monitoramento de recursos",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "release": "semantic-release"
+    "release": "semantic-release",
+    "prepare": "npm run build"
+  },
+  "keywords": ["observability", "monitoring", "heartbeat", "typescript", "metrics"],
+  "author": "Julio Cesar de Almeida Marcelino",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jcamarcelino/observability-lib.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jcamarcelino/observability-lib/issues"
+  },
+  "homepage": "https://github.com/jcamarcelino/observability-lib#readme",
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "aws-xray-sdk-core": "^3.3.3",
