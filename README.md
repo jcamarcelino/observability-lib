@@ -6,8 +6,6 @@ Uma biblioteca leve e extensível para monitoramento de aplicações Node.js, co
 
 ## 🚀 Instalação
 
-Install my-project with npm
-
 ```bash
  npm install @jcamarcelino/observability-lib 
 ```
@@ -15,73 +13,91 @@ Install my-project with npm
 ## API
 
 ```javascript
-new Heartbeat(intervalMs?: number, logger?: Logger, includeConnections?: boolean, includeCpuLoad?: boolean)
+new Heartbeat(intervalMs?: number, logger?: Logger)
 ```
 
 * intervalMs: intervalo entre batidas (default: 60000)
 * logger: objeto com métodos info() e error() (default: console)
 
 Métodos:
-* start(): inicia o heartbeat
-* stop(): interrompe o heartbeat
-* metrics(includeConnections?: boolean): Promise<Metrics>
-
-Coleta métricas do sistema.
-* includeConnections: se true, inclui conexões de rede (default: false)
-
-## 📘 Uso básico
+* start_system_metrics(): inicia o heartbeat para coleta de dados do systema
+* stop_system_metrics(): interrompe o heartbeat para coleta de dados do systema
+* start_process_metrics(): inicia o heartbeat para coleta de dados do processo
+* stop_process_metrics(): interrompe o heartbeat para coleta de dados do processo
+## 📘 Uso Básico
 
 ```javascript
 import { Heartbeat } from "@jcamarcelino/observability-lib";
 
-// Configuração personalizada
-const heartbeat = new Heartbeat(
-  60000, // intervalo de 30 segundos (default: 60000)
-  console, // logger padrão (default: console)
-  true,    // incluir conexões (default: false)
-  true     // incluir carga de CPU (default: false)
-);
+const heartbeat = new Heartbeat(10000); // intervalo de 10 segundos
 
-heartbeat.start();
+// Inicia coleta de métricas do sistema operacional
+heartbeat.start_system_metrics();
 
+// Inicia coleta de métricas do processo Node.js
+heartbeat.start_process_metrics();
 
-------------------------------------
-Exemplo de saída:
-{
-  "timestamp": "2025-07-25T15:00:00.000Z",
-  "cpu": 12.5,
-  "avg": 1.2,
-  "cores": 8,
-  "memory": {
-    "total": 16777216,
-    "free": 10485760,
-    "used": 6291456
-  },
-  "uptime": 3600,
-  "overload": false,
-  "connections": [
-    {
-      "pid": 1234,
-      "protocol": "tcp",
-      "localAddress": "192.168.0.1",
-      "localPort": "443",
-      "state": "ESTABLISHED"
-    }
-  ]
-}
+// Para a coleta de dados do sistema
+setTimeout(() => {
+  heartbeat.stop_system_metrics();
+}, 60000); // para após 1 minuto
+
+// Para a coleta de dados do processo
+setTimeout(() => {
+  heartbeat.stop_process_metrics();
+}, 60000); // para após 1 minuto
 ```
+## 📊 Métricas coletadas
 
+start_system_metrics()
 
+* Uso da CPU (total e por núcleo)
+* Carga média
+* Total de núcleos
+* Memória total, livre e usada
+* Uptime do sistema
+* Indicador de sobrecarga (avgLoad > cores)
+
+start_process_metrics()
+
+* Uso de memória do processo (heap, RSS, buffers)
+* Tempo de CPU em modo usuário e sistema
+* Uptime do processo
 ## 🛠️ Uso com logger personalizado
 
 ```javascript
-const customLogger = {
-  info: (msg, data) => console.log(`[INFO] ${msg}`, data),
-  error: (msg, err) => console.error(`[ERROR] ${msg}`, err),
-};
+import winston from "winston";
+import { Heartbeat } from "@jcamarcelino/observability-lib";
 
-const heartbeat = new Heartbeat(10000, customLogger);
-heartbeat.start();
+// Criação do logger com Winston
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ level, message, timestamp, ...meta }) => {
+      return `[${timestamp}] ${level.toUpperCase()}: ${message} ${Object.keys(meta).length ? JSON.stringify(meta) : ""}`;
+    })
+  ),
+  transports: [
+    new winston.transports.Console(),
+    // Você pode adicionar outros transports como arquivos, HTTP, etc.
+  ],
+});
+
+// Instância do Heartbeat com logger Winston
+const heartbeat = new Heartbeat(10000, logger);
+
+heartbeat.start_system_metrics();
+heartbeat.start_process_metrics();
+
+setTimeout(() => {
+  heartbeat.stop_system_metrics();
+}, 60000); // para após 1 minuto
+
+setTimeout(() => {
+  heartbeat.stop_process_metrics();
+}, 60000); // para após 1 minuto
+
 ```
 ## 🤝 Contribuições
 
