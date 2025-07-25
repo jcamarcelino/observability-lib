@@ -14,26 +14,23 @@ export class Heartbeat {
   ) {}
 
   async start() {
-    try {
-      const heartbeat = await metrics();
-      this.logger.info("Heartbeat metrics", heartbeat);
-    } catch (error: any) {
-      this.logger.error("Erro ao coletar métricas iniciais", error);
-    }
-
-    this.interval = setInterval(async () => {
+    const _heartbeat = async () => {
       try {
         const heartbeat = await metrics();
         this.logger.info("Heartbeat metrics", heartbeat);
       } catch (error: any) {
-        this.logger.error("Erro ao coletar métricas no intervalo", error);
+        this.logger.error("Erro ao coletar métricas", error);
       }
-    }, this.beatIntervalMs);
+
+      this.interval = setTimeout(_heartbeat, this.beatIntervalMs);
+    };
+
+    await _heartbeat();
   }
 
   stop() {
     if (this.interval) {
-      clearInterval(this.interval);
+      clearTimeout(this.interval);
       this.interval = null;
     }
   }
