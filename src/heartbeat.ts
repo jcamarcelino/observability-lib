@@ -1,4 +1,4 @@
-import { metrics } from "./index.js";
+import { metrics } from "./metrics.js";
 
 export interface Logger {
   info(message: string, ...meta: any[]): void;
@@ -10,22 +10,27 @@ export class Heartbeat {
 
   constructor(
     private beatIntervalMs: number = 60000,
-    private logger: Logger = console
+    private logger: Logger = console,
+    private includeConnections: boolean = false,
+    private includeCpuLoad: boolean = false
   ) {}
 
   async start() {
-    const _heartbeat = async () => {
+    const runHeartbeat = async () => {
       try {
-        const heartbeat = await metrics();
+        const heartbeat = await metrics({
+          includeConnections: this.includeConnections,
+          includeCpuLoad: this.includeCpuLoad,
+        });
         this.logger.info("Heartbeat metrics", heartbeat);
       } catch (error: any) {
         this.logger.error("Erro ao coletar métricas", error);
       }
 
-      this.interval = setTimeout(_heartbeat, this.beatIntervalMs);
+      this.interval = setTimeout(runHeartbeat, this.beatIntervalMs);
     };
 
-    await _heartbeat();
+    await runHeartbeat();
   }
 
   stop() {
